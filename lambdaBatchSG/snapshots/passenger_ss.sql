@@ -5,14 +5,14 @@
         target_schema='batchgold',
         unique_key='passenger_id',
         strategy='timestamp',
-        updated_at = 'event_timestamp') }}
+        updated_at = 'passenger_updated_at') }}
 
 SELECT
     passenger_id,
     passenger_name,
     passenger_email,
     passenger_phone,
-    event_timestamp
+    passenger_updated_at
 FROM
     {{ ref('rides_silver_batch') }}
 {% endsnapshot %}
