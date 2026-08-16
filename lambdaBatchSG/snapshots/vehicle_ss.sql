@@ -5,7 +5,7 @@
         target_schema='batchgold',
         unique_key='vehicle_id',
         strategy='timestamp',
-        updated_at = 'event_timestamp') }}
+        updated_at = 'vehicle_updated_at') }}
 
 SELECT
     vehicle_id,
@@ -13,7 +13,7 @@ SELECT
     vehicle_model,
     vehicle_color,
     license_plate,
-    event_timestamp
+    vehicle_updated_at
 FROM
     {{ ref('rides_silver_batch') }}
 {% endsnapshot %}
