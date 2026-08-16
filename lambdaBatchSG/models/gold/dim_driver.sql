@@ -10,7 +10,7 @@ SELECT
     driver_rating,
     driver_phone,
     driver_license,
-    event_timestamp as driver_updated_at,
+    driver_updated_at,
     dbt_valid_from as valid_from,
     dbt_valid_to as valid_to
 FROM
