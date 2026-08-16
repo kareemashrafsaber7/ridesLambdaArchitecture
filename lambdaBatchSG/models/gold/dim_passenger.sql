@@ -9,7 +9,7 @@ SELECT
     passenger_name,
     passenger_email,
     passenger_phone,
-    event_timestamp as passenger_updated_at,
+    passenger_updated_at,
     dbt_valid_from as valid_from,
     dbt_valid_to as valid_to
 FROM
