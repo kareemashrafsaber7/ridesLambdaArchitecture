@@ -68,7 +68,7 @@ values
 (1, 'Driver cancelled'),
 (2, 'Passenger cancelled'),
 (3, 'No show'),
-(4, null);
+(4, 'Unknown');
 
 create table ridesstream.gold.dim_vehicle_type(
     vehicle_type_id int,
