@@ -397,6 +397,19 @@ Synapse Data Warehouse
 
 The resulting architecture supports both low-latency operational analytics and historically consistent analytical workloads while keeping the streaming and batch processing paths independently maintainable.
 
+## 🚧 Known Limitations & Future Work
+
+**Final Ride Status Resolution**
+The current pipeline does not resolve a definitive final ride status (e.g., completed vs. cancelled vs. failed) at the fact-table level. Determining final status typically requires backend/application-level event finalization logic (e.g., a ride lifecycle service confirming terminal state), which sits outside the scope of this data pipeline and would require backend API changes to emit a reliable finalized-status event.
+
+The Gold layer schema (`fact_rides_batch`, `dim_ride_status`) is designed to accommodate this field once it becomes available upstream — no structural changes would be needed to the star schema, only an additional attribute/status mapping once a finalized status event exists at the source.
+
+**Other Future Improvements**
+- Backfill/replay strategy for late-arriving or out-of-order streaming events beyond the current watermark tolerance
+- Automated data quality checks (e.g., Great Expectations) integrated into the Airflow DAG prior to Synapse load
+- CI/CD pipeline for dbt model deployment and testing
+- Monitoring/alerting for streaming job health and pipeline SLAs
+
 ## 🧮 Accumulating Snapshot Fact Design (Ride Status Resolution)
 
 To capture ride status and cancellation reason without redesigning the star schema, the Batch Layer fact model follows an **accumulating snapshot fact table** pattern rather than a purely transactional one.
