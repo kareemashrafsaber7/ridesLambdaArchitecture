@@ -396,3 +396,26 @@ Databricks Processing
 Synapse Data Warehouse
 
 The resulting architecture supports both low-latency operational analytics and historically consistent analytical workloads while keeping the streaming and batch processing paths independently maintainable.
+
+## 🧮 Accumulating Snapshot Fact Design (Ride Status Resolution)
+
+To capture ride status and cancellation reason without redesigning the star schema, the Batch Layer fact model follows an **accumulating snapshot fact table** pattern rather than a purely transactional one.
+
+**Design:**
+- `fact_rides_batch` includes two additional foreign key columns — `ride_status_id` and `cancellation_reason_id` — which remain unresolved (null / "pending") until a ride's terminal event arrives.
+- Each ride may emit multiple lifecycle events (e.g., created, in-progress, completed/cancelled). Rather than assuming a fixed event count per ride, the model resolves the **latest known event** per `ride_id`:
+
+```sql
+with ranked_events as (
+    select
+        *,
+        row_number() over (
+            partition by ride_id
+            order by event_timestamp desc
+        ) as rn
+    from {{ ref('stg_ride_events') }}
+)
+
+select *
+from ranked_events
+where rn = 1
